@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: seek-ticket
+  profiles:
+    active: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/seek_ticket
+    username: seek_ticket
+    password: seek_ticket
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  mail:
+    host: localhost
+    port: 1025
+
+seek-ticket:
+  jwt:
+    secret: ${JWT_SECRET:local-dev-secret-change-me-must-be-at-least-32-chars-long}
+    expiration-hours: 8
+  collector:
+    mode: mock
+    max-routes-per-day: 4
+  rapidapi:
+    key: ${RAPIDAPI_KEY:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
+      - org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration
+      - org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration
+      - org.springframework.boot.flyway.autoconfigure.FlywayAutoConfiguration
+
+seek-ticket:
+  jwt:
+    secret: test-jwt-secret-at-least-32-characters-long
+    expiration-hours: 1
+  collector:
+    mode: mock
+    max-routes-per-day: 4
+  rapidapi:
+    key:
